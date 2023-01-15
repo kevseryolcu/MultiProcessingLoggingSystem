@@ -11,7 +11,18 @@
 
 int openFile(char* filePath, int oflag) {
     int fd = open(filePath, oflag, FILE_PERMISSIONS);
-    failChecker(fd, "Failed to open file for reading");
+    failChecker(fd, "Failed to open file");
+    return fd;
+}
+
+int createFile(char* filePath) {
+    int fd = open(filePath, O_WRONLY | O_APPEND | O_CREAT, 0666);
+    if (fd == -1 && errno != EEXIST) {
+        perror("Failed to create file");
+        _exit(-1);
+    }
+
+    fprintf(stderr, "fd %d\n", fd);
     return fd;
 }
 
@@ -23,7 +34,7 @@ void unlockFile(int fd) {
     struct flock lock;
     memset(&lock, 0, sizeof(lock));
     lock.l_type = F_UNLCK;
-    failChecker(fcntl(fd, F_SETLKW, &lock), "Failed to unlock file";
+    failChecker(fcntl(fd, F_SETLKW, &lock), "Failed to unlock file");
 }
 
 void lockFileForWrite(int fd) {

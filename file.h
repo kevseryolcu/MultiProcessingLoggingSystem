@@ -12,8 +12,10 @@
 #define FILE_PERMISSIONS 0777
 #define READ_FLAGS  (O_RDONLY)
 #define WRITE_FLAGS (O_CREAT | O_WRONLY | O_TRUNC)
+#define CREATE_FLAGS (O_WRONLY | O_APPEND | O_CREAT)
 
 int openFile(char* filePath, int oflag);
+int createFile(char* filePath);
 void closeFile(int fd);
 void unlockFile(int fd);
 void lockFileForWrite(int fd);

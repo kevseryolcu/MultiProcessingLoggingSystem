@@ -1,4 +1,6 @@
+
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -6,12 +8,16 @@
 #include "file.h"
 #include "utils.h"
 
+#define LIMIT 1000
 #define MAX_PATH_LEN 256
 
 int main(int argc, char* argv[]) {
     char filePath[MAX_PATH_LEN];
-    char* fileContent;
-    int opt;
+    // char* fileContent;
+    int opt, count = 0;
+    
+    char  timeBuffer[50];
+    char line[128];
 
     if (argc != 3) {
         fprintf(stderr, "Usage ./fileTest -f <fileName>");
@@ -32,18 +38,25 @@ int main(int argc, char* argv[]) {
         } 
     }
     
-    fprintf(stdout, "Starting program %s with argument %s\n", argv[0], filePath);
+    fprintf(stderr, "Starting program %s with argument %s\n", "./fileTest", filePath);
 
-    int fileLength = getFileLength(filePath);
-    fileContent = (char*)malloc(sizeof(char*)*fileLength);
+    int fd = createFile(filePath);
+    while (count++ < LIMIT) {
+        struct tm newtime;
+        time_t ltime;
+        
+        ltime=time(&ltime);
+        localtime_r(&ltime, &newtime);
 
-    int fd = openFile(filePath, READ_FLAGS);
-    int readLength = readFromFile(fd, fileContent, fileLength);
+        sprintf(line, "CL %d %s", count, asctime_r(&newtime, timeBuffer));
+
+        writeToFile(fd, line);
+        sleep(1);
+    }
     closeFile(fd);
 
-    fprintf(stdout, "Content:\n %s", fileContent);
     
-    fprintf(stdout, "Finished program %s with argument %s\n", argv[0], fileContent);
+    fprintf(stdout, "Finished program %s with argument %s\n", argv[0], filePath);
 
     return 0;
 }
