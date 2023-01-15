@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     char line[128];
 
     if (argc != 3) {
-        fprintf(stderr, "Usage ./child -f <fileName>");
+        fprintf(stderr, "Usage ./parent -f <fileName>");
         return -1;
     }
 
@@ -33,12 +33,12 @@ int main(int argc, char* argv[]) {
                 break;
             default:
                 fprintf(stderr, "Invalid argument\n");
-                fprintf(stderr, "Usage: ./child -f <filePath>\n");
+                fprintf(stderr, "Usage: ./parent -f <filePath>\n");
                 return -1;
         } 
     }
     
-    fprintf(stderr, "Starting program %s with argument %s\n", "./child", filePath);
+    fprintf(stderr, "Starting program %s with argument %s\n", "./parent", filePath);
 
     int fd = createFile(filePath);
     while (count++ < LIMIT) {
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
         ltime=time(&ltime);
         localtime_r(&ltime, &newtime);
 
-        sprintf(line, "CL %d %s", count, asctime_r(&newtime, timeBuffer));
+        sprintf(line, "PR %d %s", count, asctime_r(&newtime, timeBuffer));
 
         writeToFile(fd, line);
         sleep(1);
