@@ -11,6 +11,7 @@
 int main(int argc, char* argv[]) {
     char filePath[MAX_PATH_LEN];
     char* fileContent;
+    int opt;
 
     while((opt = getopt(argc, argv, ":f:")) != -1) 
     { 
@@ -26,7 +27,7 @@ int main(int argc, char* argv[]) {
         } 
     }
     
-    fprintf(stdout, "Starting program %s with argument %s\n", argv[0], fileContent);
+    fprintf(stdout, "Starting program %s with argument %s\n", argv[0], filePath);
 
     int fileLength = getFileLength(filePath);
     fileContent = (char*)malloc(sizeof(char*)*fileLength);
