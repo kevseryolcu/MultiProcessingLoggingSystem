@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
         } 
     }
     
-    fprintf(stderr, "Starting program %s with argument %s\n", "./parent", filePath);
+    fprintf(stderr, "Starting program %s with argument %s\n", "./fileTest", filePath);
 
     int fd = createFile(filePath);
     while (count++ < LIMIT) {
