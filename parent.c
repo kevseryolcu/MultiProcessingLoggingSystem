@@ -24,7 +24,8 @@ int main(int argc, char* argv[]) {
     int addrlen = sizeof(address);
     int opt = 1, newSocket, serverFd, valread;
     char buffer[1024] = { 0 };
-    char* hello = "Hello from server";
+    char* message1 = "Ground control to major Tom";
+    char* message2 = "Take your protein pills and put your helmet on";
 
     if (argc != 3) {
         fprintf(stderr, "Usage ./parent -f <fileName>");
@@ -56,16 +57,25 @@ int main(int argc, char* argv[]) {
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(8080);
     failChecker(bind(serverFd, (struct sockaddr*)&address, sizeof(address)), "Failed to bind port!");
-    failChecker(listen(serverFd, 3), "Failed to listen server socket");
-    failChecker((newSocket = accept(serverFd, (struct sockaddr*)&address, (socklen_t*)&addrlen)), "Fa'led to accept socket conn");
+    failChecker(listen(serverFd, 5), "Failed to listen server socket");
+
+    int mcount = 25;
+    while(mcount-- > 0) {
+        failChecker((newSocket = accept(serverFd, (struct sockaddr*)&address, (socklen_t*)&addrlen)), "Failed to accept socket conn");
+        valread = read(newSocket, buffer, 1024);
+        printf("%s\n", buffer);
+        send(newSocket, message1, strlen(message1), 0);
+        printf("Message1 sent\n");
     
-    valread = read(newSocket, buffer, 1024);
-    printf("%s\n", buffer);
-    send(newSocket, hello, strlen(hello), 0);
-    printf("Hello message sent\n");
- 
-    // closing the connected socket
-    close(newSocket);
+        valread = read(newSocket, buffer, 1024);
+        printf("%s\n", buffer);
+        send(newSocket, message2, strlen(message2), 0);
+        printf("Message2 sent\n");
+
+        // closing the connected socket
+        close(newSocket);
+    }
+
     // closing the listening socket
     shutdown(serverFd, SHUT_RDWR);
 

@@ -23,7 +23,6 @@ int main(int argc, char* argv[]) {
 
     int sockFd = 0, valread, clientFd;
     struct sockaddr_in serv_addr;
-    char* message = "Hello from client";
     char buffer[1024] = {0};
 
     if (argc != 3) {
@@ -56,11 +55,19 @@ int main(int argc, char* argv[]) {
     failChecker(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr), "Invalid address/ address not supported");
     failChecker((clientFd = connect(sockFd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) ), "Connection failed");
 
-    send(sockFd, message, strlen(message), 0);
-    printf("Hello message sent\n");
+    char* message1 = "This is Major Tom to Ground Control";
+    char* message2 = "I'm stepping through the door";
+
+    send(sockFd, message1, strlen(message1), 0);
+    printf("Message1 sent\n");
     valread = read(sockFd, buffer, 1024);
     printf("%s\n", buffer);
  
+    send(sockFd, message2, strlen(message2), 0);
+    printf("Message2 sent\n");
+    valread = read(sockFd, buffer, 1024);
+    printf("%s\n", buffer);
+
     // closing the connected socket
     close(clientFd);
 
